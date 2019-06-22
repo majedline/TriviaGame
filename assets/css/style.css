@@ -8,35 +8,65 @@ body{
   grid-template-areas: "header header header"
   "left main right"
   "footer footer footer";
-  grid-template-columns: 120px 4fr 300px;
+  grid-template-columns: 250px 4fr 250px;
   grid-template-rows: 100px 1fr 80px;
 }
 .container > div {
-  border: 1px dotted #888;
   padding: 5px;
   margin: 5px;
 }
 
 .header {
   grid-area: header;
+  margin: auto;
 }
 .left {
   grid-area: left;
+
 }
 .main {
+ text-align: center;
   grid-area: main;
+  border-left: 1px dotted #888;
+  border-right: 1px dotted #888;
+
+
 }
+
+.main li{
+  list-style: none;
+  border: #888 solid;
+  margin-right: 45px;
+}
+
 .right {
   grid-area: right;
+
 }
 .footer {
   grid-area: footer;
+  border: 1px dotted #888;
+
+  text-align: center;
 }
 
 
 .logo-image{
-    width: 330px;
+  text-align: center;
+    width: 430px;
     height: auto;
+
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    
+
+}
+
+.left-button{
+  margin-right: 10px;
+  margin-top: 10px;
+  width: 100%;
 }
 
 @media only screen and (max-height: 400px) {
