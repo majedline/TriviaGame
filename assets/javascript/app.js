@@ -14,7 +14,12 @@ var timeoutCount = 0;
 // went through all the questions and responded to all
 var gameOver = false;
 
+// this is used to control when the game accepts the user click. 
+//i.e. if answered wrong, then game does not accept answers until we go to the next question
+//i.e. if the user timeout, then the game does not accept the answer until going to next
+var acceptingResponsesFromUser = true;
 
+// load the questions and answers on the UI
 function loadQuestionsAndAnswersOnUI() {
 
     if (gameOver) {
@@ -51,40 +56,36 @@ function loadQuestionsAndAnswersOnUI() {
     }
 }
 
-// function caled when an answer is clicked
+// function called when an answer is clicked
 function answerClicked(){
     console.log(this);
+    if (!acceptingResponsesFromUser){
+        return;
+    }
+
+    acceptingResponsesFromUser = false;
    
     if($(this).attr("data-value") === $(this).attr("data-correct-response")){
         correctAnswerClicked();
     } else {
         wrongAnswerClicked();
     }
-
-
 }
 
+// wrong answer is clicked, show the answer, wait 5 seconds then go next.
 function wrongAnswerClicked(){   
     console.log("wrong answer");
 
-    $(".footer").html("Darn! Wrong answer. The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong> ");
-    
-    
-    var nextButton = $("<button>");
-    nextButton.attr("class", "btn btn-warning");
-    nextButton.html("Go to the next question");
-    nextButton.on("click", function (){
-        goToNextQuestion();
-    });
-
-    $(".footer").append(nextButton);
+    $(".footer").html("Darn! Wrong answer! <br> The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong>. <br>Waiting 5 seconds to go next!");
 
     wrongAnswerCount++;
     $("#wrong-answers-view").html(wrongAnswerCount);
     
     stop();
+    waitBeforeGoingNextAutomatically();
 }
 
+// correct answer clicked, go next
 function correctAnswerClicked(){
     console.log("correct answer");
     correctAnswerCount++;
@@ -93,25 +94,25 @@ function correctAnswerClicked(){
 
 }
 
+// timeout reached, show the answer and go next
 function questionTimedout(){
+    acceptingResponsesFromUser = false;
+
     console.log("timeout");
     $("#timer-view").html("- -");
-    $(".footer").html("Darn! Timed out ");
-    
-    var nextButton = $("<button>");
-    nextButton.attr("class", "btn btn-warning");
-    nextButton.html("Go to the next question");
-    nextButton.on("click", function (){
-        goToNextQuestion();
-    });
-
-    $(".footer").append(nextButton);
+    $(".footer").html("Darn! Time out! <br> The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong>. <br>Waiting 5 seconds to go next!");
 
     timeoutCount++;
     $("#timeout-view").html(timeoutCount);
-
+    waitBeforeGoingNextAutomatically();
 }
 
+// this will allow the page to wait 5 seconds before going to the next question by calling goToNextQuestion
+function waitBeforeGoingNextAutomatically(){
+    setTimeout(goToNextQuestion, 1000*5);
+}
+
+// this is called when we reach the end of the game. 
 function reachedEndOfGame(){
     stop();
     $("#question").html("Reached the end of the game :)");
@@ -135,17 +136,21 @@ function goToNextQuestion(){
     }else{
         reachedEndOfGame();
     }
+    acceptingResponsesFromUser  = true;
 }
 
+// run the counter
 function run() {
     clearInterval(intervalId);
     intervalId = setInterval(decrement, 1000);
 }
 
+// stop the counter
 function stop() {
     clearInterval(intervalId);
 }
 
+//reset the count
 function resetTimer(){
     timeRemainingForGame = 11;
     run();
