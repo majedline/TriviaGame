@@ -5,7 +5,11 @@ var currentQuestionToPlay = 0;
 var intervalId;
 
 // the amount of time of the current game remaining
-var timeRemainingForGame = 20;
+var timeRemainingForGame = 10;
+
+var wrongAnswerCount = 0;
+var correctAnswerCount = 0;
+var timeoutCount = 0;
 
 // went through all the questions and responded to all
 var gameOver = false;
@@ -14,7 +18,7 @@ var gameOver = false;
 function loadQuestionsAndAnswersOnUI() {
 
     if (gameOver) {
-        alert("game over");
+        reachedEndOfGame();
 
     } else {
 
@@ -30,7 +34,7 @@ function loadQuestionsAndAnswersOnUI() {
             answerbtn.attr("data-correct-response", questions[currentQuestionToPlay].correctResponse);
 
             // class name to hookup the event
-            answerbtn.attr("class", "answer-button btn btn-md btn-primary");
+            answerbtn.attr("class", "answer-button btn btn-md btn-info");
             answerbtn.text(questions[currentQuestionToPlay].answers[i]);
 
             // add the button to the LI
@@ -50,8 +54,6 @@ function loadQuestionsAndAnswersOnUI() {
 // function caled when an answer is clicked
 function answerClicked(){
     console.log(this);
-
-    $("#answers").empty();
    
     if($(this).attr("data-value") === $(this).attr("data-correct-response")){
         correctAnswerClicked();
@@ -59,33 +61,81 @@ function answerClicked(){
         wrongAnswerClicked();
     }
 
+
+}
+
+function wrongAnswerClicked(){   
+    console.log("wrong answer");
+
+    $(".footer").html("Darn! Wrong answer. The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong> ");
+    
+    
+    var nextButton = $("<button>");
+    nextButton.attr("class", "btn btn-warning");
+    nextButton.html("Go to the next question");
+    nextButton.on("click", function (){
+        goToNextQuestion();
+    });
+
+    $(".footer").append(nextButton);
+
+    wrongAnswerCount++;
+    $("#wrong-answers-view").html(wrongAnswerCount);
+    
+    stop();
+}
+
+function correctAnswerClicked(){
+    console.log("correct answer");
+    correctAnswerCount++;
+    $("#correct-answers-view").html(correctAnswerCount);
+    goToNextQuestion();
+
+}
+
+function questionTimedout(){
+    console.log("timeout");
+    $("#timer-view").html("- -");
+    $(".footer").html("Darn! Timed out ");
+    
+    var nextButton = $("<button>");
+    nextButton.attr("class", "btn btn-warning");
+    nextButton.html("Go to the next question");
+    nextButton.on("click", function (){
+        goToNextQuestion();
+    });
+
+    $(".footer").append(nextButton);
+
+    timeoutCount++;
+    $("#timeout-view").html(timeoutCount);
+
+}
+
+function reachedEndOfGame(){
+    stop();
+    $("#question").html("Reached the end of the game :)");
+    $("#timer-view").html("- -");
+    $(".footer").html("Yay!");
+}
+
+
+// will increment to go to the next question and loads is there are any left
+function goToNextQuestion(){
+    $("#answers").empty();
+    $(".footer").html("Pick your answer. Watch out for the time!!");
+
     // we are done with this response, lets go to the next question and load it if we havent reached the end
     currentQuestionToPlay++;
-    if (currentQuestionToPlay < questions.length){
 
+    if (currentQuestionToPlay < questions.length){
+        //there are more questions remaining, reset the timer and load the  next set of question
         resetTimer();
         loadQuestionsAndAnswersOnUI();
     }else{
         reachedEndOfGame();
     }
 }
-
-function wrongAnswerClicked(){
-    console.log("wrong answer");
-}
-
-function correctAnswerClicked(){
-    console.log("correct answer");
-}
-
-function questionTimedout(){
-    console.log(timeout);
-}
-
-function reachedEndOfGame(){
-    console.log("game over, reached the end");
-}
-
 
 function run() {
     clearInterval(intervalId);
@@ -97,7 +147,7 @@ function stop() {
 }
 
 function resetTimer(){
-    timeRemainingForGame = 21;
+    timeRemainingForGame = 11;
     run();
 }
 
@@ -106,23 +156,27 @@ function decrement() {
 
     //  Decrease number by one.
     timeRemainingForGame--;
-    console.log(timeRemainingForGame);
 
     //  Show the number in the #show-number tag.
     $("#timer-view").text(timeRemainingForGame);
 
-
     //  Once number hits zero...
     if (timeRemainingForGame === 0) {
-
-        //  ...run the stop function.
         stop();
+        questionTimedout();
 
-        //  Alert the user that time is up.
-        alert("Time Up!");
     }
 }
 
-
+// load the screen
 loadQuestionsAndAnswersOnUI();
+
+// run the timer
 run();
+
+// hookup the reload new game button event
+function newGame(){
+    location.reload();
+}
+$("#new-game-button").on("click", newGame);
+
