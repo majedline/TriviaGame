@@ -1,4 +1,4 @@
-var questions = [question0, question1, question2, question3];
+var questions = [question0, question1, question2, question3, question4];
 var currentQuestionToPlay = 0;
 
 //  Variable that will hold our interval ID when we execute the "run" function

@@ -46,7 +46,7 @@ var question1 = {
     correctResponse: "Shakespeare",
  };
 
- var question3 = {
+ var question4 = {
     id:3,
     question: "What Spanish artist said he would eat his wife when she died?",
     answers: [
