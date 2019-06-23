@@ -57,15 +57,15 @@ function loadQuestionsAndAnswersOnUI() {
 }
 
 // function called when an answer is clicked
-function answerClicked(){
+function answerClicked() {
     console.log(this);
-    if (!acceptingResponsesFromUser){
+    if (!acceptingResponsesFromUser) {
         return;
     }
 
     acceptingResponsesFromUser = false;
-   
-    if($(this).attr("data-value") === $(this).attr("data-correct-response")){
+
+    if ($(this).attr("data-value") === $(this).attr("data-correct-response")) {
         correctAnswerClicked();
     } else {
         wrongAnswerClicked();
@@ -73,34 +73,37 @@ function answerClicked(){
 }
 
 // wrong answer is clicked, show the answer, wait 5 seconds then go next.
-function wrongAnswerClicked(){   
+function wrongAnswerClicked() {
     console.log("wrong answer");
 
-    $(".footer").html("Darn! Wrong answer! <br> The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong>. <br>Waiting 5 seconds to go next!");
+    $(".footer").html("Darn! Wrong answer! <br> The correct answer is <strong>" + questions[currentQuestionToPlay].correctResponse + "</strong>. <br>Waiting 5 seconds to go next!");
 
     wrongAnswerCount++;
     $("#wrong-answers-view").html(wrongAnswerCount);
-    
+
     stop();
     waitBeforeGoingNextAutomatically();
 }
 
 // correct answer clicked, go next
-function correctAnswerClicked(){
+function correctAnswerClicked() {
     console.log("correct answer");
     correctAnswerCount++;
     $("#correct-answers-view").html(correctAnswerCount);
-    goToNextQuestion();
+    $(".footer").html("Correct!!! <br>Waiting 5 seconds to go next!");
+    
+    stop();
+    waitBeforeGoingNextAutomatically();
 
 }
 
 // timeout reached, show the answer and go next
-function questionTimedout(){
+function questionTimedout() {
     acceptingResponsesFromUser = false;
 
     console.log("timeout");
     $("#timer-view").html("- -");
-    $(".footer").html("Darn! Time out! <br> The correct answer is <strong>"+ questions[currentQuestionToPlay].correctResponse+"</strong>. <br>Waiting 5 seconds to go next!");
+    $(".footer").html("Darn! Time out! <br> The correct answer is <strong>" + questions[currentQuestionToPlay].correctResponse + "</strong>. <br>Waiting 5 seconds to go next!");
 
     timeoutCount++;
     $("#timeout-view").html(timeoutCount);
@@ -108,12 +111,12 @@ function questionTimedout(){
 }
 
 // this will allow the page to wait 5 seconds before going to the next question by calling goToNextQuestion
-function waitBeforeGoingNextAutomatically(){
-    setTimeout(goToNextQuestion, 1000*5);
+function waitBeforeGoingNextAutomatically() {
+    setTimeout(goToNextQuestion, 1000 * 5);
 }
 
 // this is called when we reach the end of the game. 
-function reachedEndOfGame(){
+function reachedEndOfGame() {
     stop();
     $("#question").html("Reached the end of the game :)");
     $("#timer-view").html("- -");
@@ -122,21 +125,21 @@ function reachedEndOfGame(){
 
 
 // will increment to go to the next question and loads is there are any left
-function goToNextQuestion(){
+function goToNextQuestion() {
     $("#answers").empty();
     $(".footer").html("Pick your answer. Watch out for the time!!");
 
     // we are done with this response, lets go to the next question and load it if we havent reached the end
     currentQuestionToPlay++;
 
-    if (currentQuestionToPlay < questions.length){
+    if (currentQuestionToPlay < questions.length) {
         //there are more questions remaining, reset the timer and load the  next set of question
         resetTimer();
         loadQuestionsAndAnswersOnUI();
-    }else{
+    } else {
         reachedEndOfGame();
     }
-    acceptingResponsesFromUser  = true;
+    acceptingResponsesFromUser = true;
 }
 
 // run the counter
@@ -151,7 +154,7 @@ function stop() {
 }
 
 //reset the count
-function resetTimer(){
+function resetTimer() {
     timeRemainingForGame = 11;
     run();
 }
@@ -180,8 +183,10 @@ loadQuestionsAndAnswersOnUI();
 run();
 
 // hookup the reload new game button event
-function newGame(){
+function newGame() {
     location.reload();
+   
+
 }
 $("#new-game-button").on("click", newGame);
 
