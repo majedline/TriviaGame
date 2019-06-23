@@ -47,6 +47,7 @@ body{
 .footer {
   grid-area: footer;
   border: 1px dotted #888;
+  font-size: 30px;
 
   text-align: center;
 }
@@ -62,6 +63,10 @@ body{
       margin-right: auto;
     
 
+}
+
+.answer-button {
+  margin: 5px;
 }
 
 .left-button{

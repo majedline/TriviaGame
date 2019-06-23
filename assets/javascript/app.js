@@ -1,13 +1,55 @@
 var questions = [question0, question1, question2, question3];
-console.log(questions);
+var currentQuestionToPlay = 0;
 
 //  Variable that will hold our interval ID when we execute the "run" function
 var intervalId;
 
 // the amount of time of the current game remaining
-var timeRemainingForGame = 60;
+var timeRemainingForGame = 5;
 
-var gameStarted = false;
+// went through all the questions and responded to all
+var gameOver = false;
+
+
+function loadQuestionsAndAnswersOnUI() {
+
+    if (gameOver) {
+        alert("game over");
+
+    } else {
+
+
+        $("#question").html(questions[currentQuestionToPlay].question);
+
+        for (var i = 0; i < questions[currentQuestionToPlay].answers.length; i++) {
+            var answerbtn = $("<button>");
+            answerbtn.attr("data-correct-response", questions[currentQuestionToPlay].correctResponse);
+            answerbtn.attr("class", "answer-button btn btn-md btn-primary");
+            answerbtn.text(questions[currentQuestionToPlay].answers[i]);
+
+
+            var li = $("<li>");
+            li.append(answerbtn);
+
+            $("#answers").append(li);
+        }
+
+        $(".answer-button").on("click", function () {
+            console.log(this);
+           
+            currentQuestionToPlay++;
+            $("#answers").empty();
+           
+            // checke if the response is correct or not
+            // if not, then display the correct 
+            
+            loadQuestionsAndAnswersOnUI();
+        });
+
+
+
+    }
+}
 
 function run() {
     clearInterval(intervalId);
@@ -16,7 +58,7 @@ function run() {
 
 function stop() {
     clearInterval(intervalId);
-  }
+}
 
 //  The decrement function.
 function decrement() {
@@ -26,7 +68,7 @@ function decrement() {
     console.log(timeRemainingForGame);
 
     //  Show the number in the #show-number tag.
-     $("#timer-view").text(timeRemainingForGame);
+    $("#timer-view").text(timeRemainingForGame);
 
 
     //  Once number hits zero...
@@ -40,24 +82,6 @@ function decrement() {
     }
 }
 
-// Convert a time t to min:seconds
-function timeConverter(t) {
 
-    var minutes = Math.floor(t / 60);
-    var seconds = t - (minutes * 60);
-
-    if (seconds < 10) {
-        seconds = "0" + seconds;
-    }
-
-    if (minutes === 0) {
-        minutes = "00";
-    }
-    else if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
-
-    return minutes + ":" + seconds;
-}
-
+loadQuestionsAndAnswersOnUI();
 run();
