@@ -1,5 +1,6 @@
 body{
-	background-color: #ffffdd;
+  background-color: #000033;
+  color: white;
 }
 
 .container {
@@ -53,7 +54,7 @@ body{
 
 .logo-image{
   text-align: center;
-    width: 430px;
+    width: 400px;
     height: auto;
 
       display: block;
