@@ -13,6 +13,7 @@ var timeoutCount = 0;
 
 // went through all the questions and responded to all
 var gameOver = false;
+var isNewGame = true;
 
 // this is used to control when the game accepts the user click. 
 //i.e. if answered wrong, then game does not accept answers until we go to the next question
@@ -21,6 +22,10 @@ var acceptingResponsesFromUser = true;
 
 // load the questions and answers on the UI
 function loadQuestionsAndAnswersOnUI() {
+    if (isNewGame){
+        shuffleQuestions();
+        isNewGame =false;
+    } 
 
     if (gameOver) {
         reachedEndOfGame();
@@ -159,6 +164,12 @@ function resetTimer() {
     run();
 }
 
+function shuffleQuestions() {
+    questions.sort(() => Math.random() - 0.5);
+    console.log("shuffle");
+  }
+
+
 //  The decrement function.
 function decrement() {
 
@@ -185,8 +196,5 @@ run();
 // hookup the reload new game button event
 function newGame() {
     location.reload();
-   
-
 }
 $("#new-game-button").on("click", newGame);
-
